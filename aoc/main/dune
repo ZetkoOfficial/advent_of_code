@@ -1,0 +1,6 @@
+(executables
+ (names example main)
+ (libraries solution)
+ (promote
+  (until-clean)
+  (into ../../bin)))
