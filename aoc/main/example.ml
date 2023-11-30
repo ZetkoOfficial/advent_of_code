@@ -14,7 +14,7 @@ end;;
 
 let run_test m = 
   let (module Solve): (module Solution.GenericSolution) = m in 
-  Solve.write1 Stdlib.stdout (Stdlib.open_in "in/example" |> Solve.parse1 |> Solve.solve1);
+  Solve.write1 Stdlib.stdout (Stdlib.open_in "in/example" |> Solve.parse |> Solve.solve1);
   print_endline "--------------------------"
 ;;
 
