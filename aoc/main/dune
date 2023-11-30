@@ -1,6 +1,6 @@
 (executables
  (names example main)
- (libraries solution)
+ (libraries days solution)
  (promote
   (until-clean)
   (into ../../bin)))
