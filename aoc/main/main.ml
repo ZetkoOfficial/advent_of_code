@@ -6,6 +6,7 @@ let implementirano: (int*(module Solution.GenericSolution)) list =
   (3, (module Days.Day3.Resitev));
   (4, (module Days.Day4.Resitev));
   (5, (module Days.Day5.Resitev));
+  (6, (module Days.Day6.Resitev));
 ];;
 
 let write_solve istr m = 
