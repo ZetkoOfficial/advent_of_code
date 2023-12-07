@@ -48,11 +48,12 @@ module Resitev : Solution.GenericSolution = struct
     | _ -> failwith "invalid cards"
   ;;
 
-  let best_hand_val hand = (* naivno bo ok *)
-    let cards = ['A';'K';'Q';'J';'T';'9';'8';'7';'6';'5';'4';'3';'2'] in
-    List.fold_left (fun acc c -> 
-      min acc (hand_to_val (List.map (fun k -> if k = 'J' then c else k) hand))
-    ) max_int cards
+  let best_hand_val hand = (* lahko tudi kar najdemo najpogostejšo *)
+    let cmn,_ = List.fold_left (fun (c,occ) (c',occ') -> 
+      if occ' >= occ && c' != 'J' then (c',occ') else (c, occ) 
+    ) ('A',0) (CMap.bindings @@ to_occ_map hand) in
+    
+    hand_to_val (List.map (fun c -> if c = 'J' then cmn else c) hand)
   ;;
 
   let compare_hands hand1 hand2 is_part2 =
