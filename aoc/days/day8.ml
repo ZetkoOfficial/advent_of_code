@@ -72,13 +72,6 @@ module Resitev : Solution.GenericSolution = struct
     [ string_of_int cnt ]
   ;;
 
-  let rec _lcm list = 
-    match list with
-    | [] -> failwith "error"
-    | [h] -> h
-    | h1::h2::t -> let (g,_,_) = gcd h1 h2 in _lcm (((h1*h2)/g)::t)
-  ;;
-
   let solve2 (ins,map) = (* predpostavimo da je v vsakem ciklu le eno veljavno končno mesto in se cikel začne z njem *)
     let start = SMap.bindings map |> List.map (fun (u,_) -> u) |> List.filter (is_start) in
     let final_points = List.map (fun s -> run_until ins map s is_final_2 false) start in
