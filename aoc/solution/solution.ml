@@ -37,6 +37,7 @@ let write_solution out_channel solution =
     | [] -> ()
     | h::t -> 
       Out_channel.output_string out_channel (h^"\n");
+      Out_channel.flush out_channel;
       aux t in
   aux solution
 ;;
