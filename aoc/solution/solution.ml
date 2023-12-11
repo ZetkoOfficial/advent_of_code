@@ -42,6 +42,20 @@ let write_solution out_channel solution =
   aux solution
 ;;
 
+(* Pogosto uporabljene funkcije *)
+
+let bin_search v arr = 
+  let rec aux i j = 
+    if i > j then failwith "not found"
+    else 
+      let mid = (i+j)/2 in 
+      if arr.(mid) = v then mid
+      else
+        if arr.(mid) < v then aux (mid+1) j
+        else aux i (mid-1) in
+  aux 0 (Array.length arr - 1)
+;;
+
 module StringSolutionIO : 
   (GenericSolutionIO with type p_in := string list and type p1_out := string list and type p2_out := string list) = struct
 
