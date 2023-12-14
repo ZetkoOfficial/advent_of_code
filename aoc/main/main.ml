@@ -23,8 +23,9 @@ let write_solve istr m =
   try 
     let start_time = Unix.gettimeofday() in
 
-    Solve.write1 (Stdlib.open_out ("out/day_"^istr^"_1.out")) (Stdlib.open_in ("in/day_"^istr^".in") |> Solve.parse |> Solve.solve1);
-    Solve.write2 (Stdlib.open_out ("out/day_"^istr^"_2.out")) (Stdlib.open_in ("in/day_"^istr^".in") |> Solve.parse |> Solve.solve2);
+    let input = Stdlib.open_in ("in/day_"^istr^".in") |> Solve.parse in
+    Solve.write1 (Stdlib.open_out ("out/day_"^istr^"_1.out")) (input |> Solve.solve1);
+    Solve.write2 (Stdlib.open_out ("out/day_"^istr^"_2.out")) (input |> Solve.solve2);
     
     let end_time = Unix.gettimeofday() in
     let elapsed_ms = truncate (1000.0 *. (end_time -. start_time)) in
