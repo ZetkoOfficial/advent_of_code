@@ -15,20 +15,6 @@ module Resitev : Solution.GenericSolution = struct
     in_channel |> Solution.read_lines |> List.map (fun line -> List.of_seq @@ String.to_seq line) |> split_empty
   ;;
 
-  let transpose list =
-    let rec aux list acc = 
-      if list = [] then acc
-      else 
-        let col, rem = 
-        List.fold_right(fun row (acc,rem) ->
-          match row with
-          | [] -> acc,[]
-          | h::t -> (h::acc), (t::rem)
-        ) list ([],[])  in
-        aux rem (col::acc) in
-    List.rev @@ List.tl @@ aux list []
-  ;;
-
   let rec matches list1 list2 = 
     match list1,list2 with
     | [],_ -> true
@@ -80,7 +66,7 @@ module Resitev : Solution.GenericSolution = struct
 
   let solve1 input = (* predpostavimo da največ ena os reflekcije v vsako smer *)
     let sum = List.fold_left (fun acc list -> 
-      let mi, mj = find_mirror list 0, find_mirror (transpose list) 0 in
+      let mi, mj = find_mirror list 0, find_mirror (Solution.transpose list) 0 in
       acc + 100*mi + mj
     ) 0 input in
 
@@ -89,8 +75,8 @@ module Resitev : Solution.GenericSolution = struct
 
   let solve2 input =
     let sum = List.fold_left (fun acc list -> 
-      let mi, mj = find_mirror list 0, find_mirror (transpose list) 0 in
-      let sum = 100*(find_smudge list mi) + (find_smudge (transpose list) mj) in
+      let mi, mj = find_mirror list 0, find_mirror (Solution.transpose list) 0 in
+      let sum = 100*(find_smudge list mi) + (find_smudge (Solution.transpose list) mj) in
       acc + sum
     ) 0 input in
 

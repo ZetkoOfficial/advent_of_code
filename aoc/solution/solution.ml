@@ -56,6 +56,20 @@ let bin_search v arr =
   aux 0 (Array.length arr - 1)
 ;;
 
+let transpose list =
+  let rec aux list acc = 
+    if list = [] then acc
+    else 
+      let col, rem = 
+      List.fold_right(fun row (acc,rem) ->
+        match row with
+        | [] -> acc,[]
+        | h::t -> (h::acc), (t::rem)
+      ) list ([],[])  in
+      aux rem (col::acc) in
+  List.rev @@ List.tl @@ aux list []
+;;
+
 module StringSolutionIO : 
   (GenericSolutionIO with type p_in := string list and type p1_out := string list and type p2_out := string list) = struct
 
