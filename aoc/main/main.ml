@@ -15,6 +15,7 @@ let implementirano: (int*(module Solution.GenericSolution)) list =
   (12, (module Days.Day12.Resitev));
   (13, (module Days.Day13.Resitev));
   (14, (module Days.Day14.Resitev));
+  (15, (module Days.Day15.Resitev));
 ];;
 
 let write_solve istr m = 
