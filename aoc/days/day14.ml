@@ -27,14 +27,6 @@ module Resitev : Solution.GenericSolution = struct
     in_channel |> Solution.read_lines |> List.map (fun line -> List.map (from_char) (List.of_seq @@ String.to_seq line))
   ;;
 
-  (* let split_by_wall slice = 
-    let acc,rem = List.fold_left (fun (acc,rem) char ->
-      if char = Wall then (List.rev rem)::acc, []
-      else acc, char::rem
-    ) ([],[]) slice in
-    List.rev ((List.rev rem)::acc)
-  ;; *)
-
   let split_by_wall slice = 
     let acc,rem = List.fold_right (fun char (acc,rem) ->
       if char = Wall then rem::acc, []
