@@ -45,5 +45,20 @@ let rec create_outputs days total_time =
   | [] -> print_endline ("[@] Izpisani vsi dnevi"^" (v "^ string_of_int total_time ^"ms)")
 ;;
 
-print_endline "[@] Izpisovanje rešitev... ";;
-create_outputs implementirano 0;;
+match Array.length Sys.argv with
+| 1 -> begin 
+
+  print_endline "[@] Izpisovanje vseh rešitev... ";
+  create_outputs implementirano 0 end
+  
+| 2 -> 
+  begin try
+    let i = int_of_string @@ Sys.argv.(1) in
+    let m = List.assoc i implementirano in 
+
+    print_endline "[@] Izpisovanje izbranega dneva... ";
+    let _ = write_solve (string_of_int i) m in ()
+
+  with _ -> print_endline "[!] Neveljevna oznaka dneva" end
+  | _ -> print_endline "[!] Nepravilno število argumentov" 
+;;
