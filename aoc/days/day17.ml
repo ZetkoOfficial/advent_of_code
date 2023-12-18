@@ -5,12 +5,10 @@ module Resitev : Solution.GenericSolution = struct
   type state = (int*int) * (direction * int)
 
   module II =     struct type t = int * int   let compare = compare end
-  module State =  struct type t = state       let compare = compare end
   module IState = struct type t = int * state let compare = compare end
   
-  module IISet = Set.Make(IState)
+  module Queue = Set.Make(IState)
   module IIMap = Map.Make(II)
-  module StateMap = Map.Make(State)
 
   type p_in = (int IIMap.t) * int * int
 
@@ -25,7 +23,7 @@ module Resitev : Solution.GenericSolution = struct
 
   let parse in_channel = in_channel |> Solution.read_lines |> enum;;
 
-  let get_adj_1 (((i,j),(dir,num)): state) map: state list =
+  let get_adj_1 map (((i,j),(dir,num)): state): state list =
     let adj = match dir,num with
     | Start,_     -> [(i,j+1),(Right,1);(i+1,j),(Down,1);]
 
@@ -41,7 +39,7 @@ module Resitev : Solution.GenericSolution = struct
     List.filter (fun (p,_) -> IIMap.mem p map) adj
   ;;
 
-  let get_adj_2 (((i,j),(dir,num)): state) map: state list =
+  let get_adj_2 map (((i,j),(dir,num)): state): state list =
     let adj = match dir,num with
     | Start,_     -> [(i,j+1),(Right,1);(i+1,j),(Down,1);]
 
@@ -62,33 +60,12 @@ module Resitev : Solution.GenericSolution = struct
     List.filter (fun (p,_) -> IIMap.mem p map) adj
   ;;
 
-  let get_dist (s: state) dist = 
-    match StateMap.find_opt s dist with
-    | None -> max_int/2
-    | Some v -> v
-  ;;
-
   let dijkstra start map adj_func = 
-    let rec aux dist q = 
-      if IISet.is_empty q then dist
-      else 
-        let (d, point) = IISet.min_elt q in
-        let q = IISet.remove (d,point) q in
-        let dist, q = List.fold_left (fun (dist,q) (p,dir) ->
-          let d' = d + IIMap.find p map in
-          if d' < get_dist (p,dir) dist then
-            StateMap.add (p,dir) d' dist, IISet.add (d',(p,dir)) q
-          else dist, q
-        ) (dist,q) (adj_func point map) in aux dist q in
-    
-    let state = start, (Start,0) in
-    let dist = StateMap.add state 0 StateMap.empty in
-    let q = IISet.add (0, state) IISet.empty in
-    aux dist q
+    Solution.dijkstra (start, (Start, 0)) (fun (p,_) -> IIMap.find p map) (adj_func map) (module Queue)
   ;;
 
   let get_min_dist p dist min_steps=
-    StateMap.fold (fun (p',(_,steps)) value acc -> if p=p' && steps >= min_steps then min acc value else acc) dist max_int
+    Hashtbl.fold (fun (p',(_,steps)) value acc -> if p=p' && steps >= min_steps then min acc value else acc) dist max_int
   ;; 
 
   let solve1 (map,n,m) = 

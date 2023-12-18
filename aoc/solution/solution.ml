@@ -56,6 +56,31 @@ let bin_search v arr =
   aux 0 (Array.length arr - 1)
 ;;
 
+(* polimorfizirana dijkstra iz dneva 17 *)
+let dijkstra (type state) start weight_func adj_func (module PQueue: Set.S with type elt = int*state) = 
+  let dist = Hashtbl.create 10000 in
+  let get_dist s = 
+    match Hashtbl.find_opt dist s with
+    | None -> max_int/2
+    | Some v -> v 
+  in
+  let rec aux q = 
+    if PQueue.is_empty q then dist
+    else 
+      let (d, point) = PQueue.min_elt q in
+      let q = PQueue.remove (d,point) q in
+      let q = List.fold_left (fun q state ->
+        let d' = d + weight_func state in
+        if d' < get_dist state then
+          begin Hashtbl.add dist state d'; PQueue.add (d',state) q end
+        else q
+      ) q (adj_func point) in aux q in
+  
+  let state = start in
+  let q = PQueue.add (0, state) PQueue.empty in
+  aux q
+;;
+
 let transpose list =
   let rec aux list acc = 
     if list = [] then acc
