@@ -44,6 +44,17 @@ let write_solution out_channel solution =
 
 (* Pogosto uporabljene funkcije *)
 
+let split_empty lines = 
+  let p1, p2, _ = List.fold_left (fun (first,second,is_second) line -> 
+    if line = "" then (first, second, true)
+    else 
+      if is_second then first, (line::second), is_second
+      else (line::first), second, is_second
+  ) ([],[], false) lines in
+
+  List.rev p1, List.rev p2
+;;
+
 let bin_search v arr = 
   let rec aux i j = 
     if i > j then failwith "not found"
