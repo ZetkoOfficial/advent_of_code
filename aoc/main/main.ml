@@ -23,6 +23,7 @@ let implementirano: (int*(module Solution.GenericSolution)) list =
   (20, (module Days.Day20.Resitev));
   (21, (module Days.Day21.Resitev));
   (22, (module Days.Day22.Resitev));
+  (23, (module Days.Day23.Resitev));
 ];;
 
 let write_solve istr m = 
