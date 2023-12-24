@@ -1,10 +1,7 @@
-module Resitev : Solution.GenericSolution = struct 
+module  Resitev : Solution.GenericSolution = struct 
   include Solution.StringSolution
 
   module II =     struct type t = int * int           let compare = compare end
-
-  module IMap = Map.Make(Int)
-  module ISet = Set.Make(Int)
 
   module IIMap = Map.Make(II)
   module IISet = Set.Make(II)
@@ -62,12 +59,7 @@ module Resitev : Solution.GenericSolution = struct
     ) map |> List.map (fun (p,_) -> p)
   ;;
 
-  let add k v map =
-    match IMap.find_opt k map with
-    | None -> IMap.add k [v] map
-    | Some list -> IMap.add k (v::list) map 
-  ;;
-
+  let add k v arr = arr.(k) <- v::(arr.(k));;
   let find_index list p = 
     let _,i = List.find (fun (v,_) -> List.mem p v) list in i
   ;;
@@ -101,29 +93,34 @@ module Resitev : Solution.GenericSolution = struct
     let enum = (fun start list -> List.mapi (fun i v -> v,i+start) list) in
     let ep, es = enum 0 problematic, enum (List.length problematic) sections in
     
-    let adj = List.fold_left (fun acc (p,i) -> 
-      let adj = get_adj_2 map p IISet.empty in
-      let i's = List.sort_uniq (compare) @@ List.map (find_index es) adj in
-      List.fold_left (fun acc i' -> add i i' (add i' i acc)) acc i's
-    ) IMap.empty ep in
+    let adj =   Array.make (List.length ep + List.length es) [] in
+    let dist =  Array.make (List.length ep + List.length es) 1 in
 
-    let dist = List.fold_left (fun acc (p,i) -> IMap.add i (List.length p) acc) IMap.empty es in
-    let dist = List.fold_left (fun acc (_,i) -> IMap.add i 1 acc) dist ep in
+    List.iter (fun (p,i) -> 
+      let adj' = get_adj_2 map p IISet.empty in
+      let i's = List.sort_uniq (compare) @@ List.map (find_index es) adj' in
+      List.iter (fun i' -> add i i' adj; add i' i adj) i's
+    ) ep;
+    List.iter (fun (p,i) -> dist.(i) <- List.length p) es;
+
     let s,e = find_index es (0,1), find_index es (n-1,m-2) in
-
     adj, dist, s, e
   ;;
 
-  let find_skip map k seen = List.filter (fun v -> not (ISet.mem v seen)) (IMap.find k map);;
+  let find_skip arr k seen = List.filter (fun v -> not seen.(v)) arr.(k);;
 
-  let longest_2 (adj,dist,s,e) = 
-    let rec aux p seen = 
+  let longest_2 (adj,dist,s,e) =
+    let seen = Array.make (Array.length adj) false in
+    let rec aux p = 
       let adj = find_skip adj p seen in
-      let possible = List.map (fun n -> aux n (ISet.add p seen)) adj in
+      seen.(p) <- true;
+      let possible = List.map (fun n -> aux n) adj in
+      seen.(p) <- false;
+      
       let best = List.fold_left (max) 0 possible in
-      if best = 0 && p <> e then min_int else (IMap.find p dist) + best in
+      if best = 0 && p <> e then min_int else dist.(p) + best in
 
-    aux s ISet.empty - 1
+    aux s - 1
   ;;
   
   let solve1 (grid,n,m) = [ string_of_int @@ longest_1 grid (n-1,m-2) (0,1) ];; 
