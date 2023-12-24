@@ -24,6 +24,7 @@ let implementirano: (int*(module Solution.GenericSolution)) list =
   (21, (module Days.Day21.Resitev));
   (22, (module Days.Day22.Resitev));
   (23, (module Days.Day23.Resitev));
+  (24, (module Days.Day24.Resitev));
 ];;
 
 let write_solve istr m = 
@@ -40,7 +41,12 @@ let write_solve istr m =
     let elapsed_ms = truncate (1000.0 *. (end_time -. start_time)) in
     
     print_endline ("|----> Izpisane rešitve za dan "^istr^" (v "^ string_of_int elapsed_ms ^"ms)"); elapsed_ms
-  with _ -> begin print_endline ("|      Napaka v izvajanju dan "^istr) end; 0
+  with e -> begin 
+    let msg = Printexc.to_string e
+    and stack = Printexc.get_backtrace () in
+    Printf.eprintf "there was an error: %s%s\n" msg stack;
+    print_endline ("|      Napaka v izvajanju dan "^istr) 
+  end; 0
 ;;
 
 let rec create_outputs days total_time = 
